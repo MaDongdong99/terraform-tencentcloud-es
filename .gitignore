@@ -1,0 +1,53 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+#IDEA
+.idea/
+
+
+# PUBLIC KEY
+backend/app1/configs/cert/
+backend/app2/configs/cert/
+frontend/configs/cert/
+
+# Bin Files
+backend/app1/_output/
+backend/app2/_output/
+frontend/_output/
+
+# Build
+frontend/node_modules/
+frontend/build/
+
+# local config
+**/config.dev.yaml
+
+# terraform
+**/.terragrunt-cache/
+.terraform.lock.hcl
+tfplan.*
+**/terraform.log
+**/*.log
+**/tfplan
+**/*.tfstate
+**/.terraform/
+*.tfplan
+.terraform.tfstate*
+terraform.tfstate*
+
+backend/app1/Dockerfile
+**/.kubeconfig
+
+.local
+
+*.zip
