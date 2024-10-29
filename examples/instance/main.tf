@@ -1,19 +1,40 @@
+locals {
+  name = "tf-test-es"
+  availability_zones = ["ap-singapore-2", "ap-singapore-3"]
+  vpc_cidr = "10.0.0.0/16"
+  subnet_cidrs = ["10.0.0.0/24", "10.0.1.0/24"]
+
+  tags = { create: "terraform"}
+}
+
+module "network" {
+  source  = "terraform-tencentcloud-modules/vpc/tencentcloud"
+  version = "1.1.0"
+  vpc_name         = local.name
+  vpc_cidr         = "10.0.0.0/16"
+  vpc_is_multicast = false
+  tags             = local.tags
+
+  availability_zones = local.availability_zones
+  subnet_name        = local.name
+  subnet_cidrs       = local.subnet_cidrs
+  subnet_is_multicast = false
+  subnet_tags        = local.tags
+}
+
 module "instance" {
   source = "../../modules/instance"
 
   create_instance = true
-  instance_name = "tf-test-es-instance"
+  instance_name = local.name
   password = "P@ssword!"
 
   license_type = "basic"
   basic_security_type = 2
 
-  tags = {
-    create: "terraform",
-    env: "dev"
-  }
+  tags = local.tags
 
-  vpc_id = "vpc-j0sqtqk7"
+  vpc_id = module.network.vpc_id
   deploy_mode = 1 # Valid values are 0 and 1. 0 is single-AZ deployment, and 1 is multi-AZ deployment
 
   node_info_list = [
@@ -41,12 +62,12 @@ module "instance" {
 
   multi_zone_infos = [
     {
-      availability_zone = "ap-singapore-2"
-      subnet_id = "subnet-p6xvdq6i"
+      availability_zone = local.availability_zones[0]
+      subnet_id = module.network.subnet_id[0]
     },
     {
-      availability_zone = "ap-singapore-3"
-      subnet_id = "subnet-0qoq4mg0"
+      availability_zone = local.availability_zones[1]
+      subnet_id = module.network.subnet_id[1]
     }
   ]
   cos_backup = {
